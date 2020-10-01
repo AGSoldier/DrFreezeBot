@@ -5,23 +5,26 @@ import database
 from threading import Thread
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.ext import Updater, MessageHandler, CommandHandler, Filters, CallbackQueryHandler
-from command_data import RegisterCommandData
+from command_data import RegisterCommandData, ApprovalRequestData
 
 # Classe del bot Telegram, estende la classe Thread
 class TelegramBotThred(Thread):
 
     ### Variabili
     registration_processes = {}
+    approval_processes = {}
 
     ### Callbacks
     product_data_service = None
 
     ### Costruttore
-    def __init__(self):
+    def __init__(self, debug):
         Thread.__init__(self)
         self.running = False
+        self.debug = debug
         
-        self.updater = Updater(token = settings.TELEGRAM_TOKEN, use_context = True)
+        token = self.debug if setting.TELEGRAM_DBG_TOKEN else settings.TELEGRAM_TOKEN
+        self.updater = Updater(token = token, use_context = True)
         self.dispatcher = self.updater.dispatcher
         
         self.cmds_setup()
@@ -91,7 +94,18 @@ class TelegramBotThred(Thread):
     
     # Comportamento del comando 'start'
     def start_cmd(self, update, context):
-        exist_user = database.exist_user(telegram_id = str(update.effective_chat.id))
+        user_id = update.effective_chat.id
+        exist_user = database.exist_user(telegram_id = str(user_id))
+        
+        if self.debug and exist_user:
+            user = database.get_user(telegram_id = str(update.effective_chat.id))
+            if not user['debugger']:
+                if not user_id in self.approval_processes:
+                    context.bot.send_message(chat_id = update.effective_chat.id, text = "È stata inviata la richiesta per poter usare questo bot agli amministratori.")
+                    self.approval_processes[user_id] = ApprovalRequestData(update.callback_query, user_id, "{} {}".format(update.from_user.first_name, update.from_user.last_name)
+                    return
+                
+                return
         
         msg = "Benvenuto su *Deal Alert!* Per iniziare a controllare un prodotto Amazon usa il comando /register."
         if not exist_user:
@@ -163,6 +177,7 @@ class TelegramBotThred(Thread):
                 reply_markup = reply_markup
             )
             
+    # Comportamento del comando 'help'
     def help_cmd(self, update, context):
         msg = "*Deal Alert!*\n\nDeal Alert! ti consente di tenere sott'occhio i prodotti Amazon che ti interessano.\n\nTi basterà usare il comando /register e seguire le indicazioni.\nInvia qualsiasi link Amazon al bot, imposta un prezzo massimo a cui vorresti acquistarlo ed il bot ti avviserà appena il prodotto scenderà al prezzo da te indicato!\n\nCon il comando /list puoi controllare i prodotti da te registrati ed eventualmente eliminarli!\n\nBuono shopping!"
         

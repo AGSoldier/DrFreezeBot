@@ -60,6 +60,17 @@ def get_user_by_id(id):
         """, (id,))
         
         return cur.fetchone()
+    
+# Ritorna gli utenti con ruolo di admin    
+def get_admins():
+    with conn.cursor(cursor_factory = DictCursor) as cur:
+        cur.execute("""
+        SELECT * FROM users
+        WHERE role = %s;
+        """, (1,))
+        
+        return cur.fetchall()
+    
         
 # Aggiunge un watch per un utente
 def add_watch(user_id, product_id, product_alias, price_threshold):

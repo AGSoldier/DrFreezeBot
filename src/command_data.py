@@ -54,3 +54,16 @@ class RegisterCommandData:
             return True
         except:
             return False
+            
+class ApprovalRequestProcess:
+    
+    ### Variabili
+    query = None
+    request_id = None
+    request_name = None
+    
+    ### Costruttori
+    def __init__(self, query, request_id, request_name):
+        self.query = query
+        self.request_id = request_id
+        self.request_name = request_name

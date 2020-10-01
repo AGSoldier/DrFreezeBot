@@ -17,6 +17,20 @@ CREATE TABLE languages(
 
 );
 
+-- ROLES TABLE
+DROP TABLE IF EXISTS roles CASCADE;
+CREATE TABLE roles(
+    
+    -- Columns
+    id SERIAL NOT NULL,
+    role int NOT NULL,
+    name varchar NOT NULL,
+    
+    -- Constraints
+    PRIMARY KEY(id)
+    
+);
+
 -- USERS TABLE
 DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users(
@@ -27,10 +41,13 @@ CREATE TABLE users(
     telegram_handle varchar,
     discord_id varchar,
     discord_handle varchar,
+    role integer NOT NULL default(0),
     pref_lang int NOT NULL DEFAULT(1),
+    debugger boolean NOT NULL DEFAULT(false),
     
     -- Constraints
     PRIMARY KEY(id),
+    FOREIGN KEY(role) REFERENCES roles(id),
     FOREIGN KEY(pref_lang) REFERENCES languages(id),
     UNIQUE(telegram_id),
     UNIQUE(discord_id)
@@ -93,4 +110,9 @@ CREATE TABLE intl_txt(
 
 -- INSERT INTO LANGUAGES
 INSERT INTO languages(code, name)
-VALUES('en_EN', 'English');
+VALUES  ('en_EN', 'English');
+
+-- INSERT INTO ROLES
+INSERT INTO roles(role, name)
+VALUES  (0, 'User'),
+        (1, 'Admin');

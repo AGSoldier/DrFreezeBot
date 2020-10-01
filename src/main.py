@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import signal
 import database
 from telegram_bot import TelegramBotThred
 from amazon_watch import AmazonWatch
@@ -7,21 +8,17 @@ from amazon_watch import AmazonWatch
 tbot = TelegramBotThred()
 watch = AmazonWatch(tbot)
 
-def terminal():
-    while True:
-        cmd = input("> ")
-        
-        if cmd == "exit":
-            print("[INFO] Shutting down application...")
-            watch.stop()
-            tbot.stop()
-            while watch.is_alive() or tbot.is_alive():
-                pass
-            database.disconnect()
-            
-            exit()
-        else:
-            print("[ERROR] Unknown command")
+def signal_handler(sig, frame):
+    print("[INFO] Shutting down application...")
+    watch.stop()
+    watch.join()
+    tbot.stop()
+    tbot.join()
+    while watch.is_alive() or tbot.is_alive():
+        pass
+    database.disconnect()
+    
+    exit()
 
 def main():
     print("[INFO] Starting application...")
@@ -32,7 +29,9 @@ def main():
     while not tbot.running:
         pass
     
-    terminal()
+    signal.signal(signal.SIGINT, signal_handler)
+    while True:
+        pass
 
 if __name__ == "__main__":
     main()

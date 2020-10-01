@@ -12,6 +12,7 @@ class AmazonWatch(Thread):
     def __init__(self, tbot):
         Thread.__init__(self)
         self.running = False
+        self.timer = REFRESH_TIMEOUT
         
         self.amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, "IT")
         self.tbot = tbot
@@ -22,8 +23,11 @@ class AmazonWatch(Thread):
     def run(self):
         self.running = True
         while self.running:
-            time.sleep(REFRESH_TIMEOUT)
-            self.check_products()
+            time.sleep(1)
+            self.timer -= 1
+            if self.timer == 0:
+                self.check_products()
+                self.timer = REFRESH_TIMEOUT
             
     # Ferma i controlli dei prezzi
     def stop(self):

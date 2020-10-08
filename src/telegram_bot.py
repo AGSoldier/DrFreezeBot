@@ -258,7 +258,7 @@ class TelegramBotThread(Thread):
     # Comportamento del comando 'help'
     def help_cmd(self, update, context):
         user_id = update.effective_chat.id
-        user = database.get_user(telegram_id = user_id)
+        user = database.get_user(telegram_id = str(user_id))
         self.update_handle(str(user_id), update.effective_chat.username)
         
         msg = "*Deal Alert!*\n\nDeal Alert! ti consente di tenere sott'occhio i prodotti Amazon che ti interessano.\n\nTi basterà usare il comando /register e seguire le indicazioni.\nInvia qualsiasi link Amazon al bot, imposta un prezzo massimo a cui vorresti acquistarlo ed il bot ti avviserà appena il prodotto scenderà al prezzo da te indicato!\n\nCon il comando /list puoi controllare i prodotti da te registrati ed eventualmente eliminarli!\n\nBuono shopping!"

@@ -3,11 +3,11 @@
 import sys
 import signal
 import database
-from telegram_bot import TelegramBotThred
+from telegram_bot import TelegramBotThread
 from amazon_watch import AmazonWatch
 
-debug = sys.argv[1] != None and sys.argv[1] == "-d"
-tbot = TelegramBotThred(debug)
+debug = len(sys.argv) > 1 and sys.argv[1] == "-d"
+tbot = TelegramBotThread(debug)
 watch = AmazonWatch(tbot)
 
 def signal_handler(sig, frame):

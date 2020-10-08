@@ -46,7 +46,10 @@ class AmazonWatch(Thread):
             
             if price <= float(watch['price_threshold']):
                 database.update_last_checked_price(watch['id'], price)
-                self.tbot.notify_user(watch['user_id'], product)
+                if watch['broadcast']:
+                    self.tbot.notify_broadcast(watch['user_id'], watch['product_alias'], product)
+                else:
+                    self.tbot.notify_user(watch['user_id'], watch['product_alias'], product)
                 
     # Ottiene le informazioni di un prodotto
     def get_product_info(self, product_id):

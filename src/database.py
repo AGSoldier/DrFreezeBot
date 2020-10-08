@@ -51,6 +51,15 @@ def get_user(telegram_id = "", discord_id = ""):
         
         return cur.fetchone()
         
+# Ritorna tutti gli utenti
+def get_users():
+    with conn.cursor(cursor_factory = DictCursor) as cur:
+        cur.execute("""
+        SELECT * FROM users;
+        """)
+        
+        return cur.fetchall()
+        
 # Ritorna un utente specificato il suo ID
 def get_user_by_id(id):
     with conn.cursor(cursor_factory = DictCursor) as cur:
@@ -60,6 +69,23 @@ def get_user_by_id(id):
         """, (id,))
         
         return cur.fetchone()
+        
+# Controlla se l'utente ha i permessi di debug
+def is_user_debugger(user_id):
+    try:
+        result = None
+        
+        with conn.cursor(cursor_factory = DictCursor) as cur:
+            cur.execute("""
+            SELECT debugger FROM users
+            WHERE id = %s;
+            """, (user_id,))
+            
+            result = cur.fetchone()
+            
+        return result["debugger"]
+    except:
+        return False
     
 # Ritorna gli utenti con ruolo di admin    
 def get_admins():
@@ -67,19 +93,51 @@ def get_admins():
         cur.execute("""
         SELECT * FROM users
         WHERE role = %s;
-        """, (1,))
+        """, (2,))
         
         return cur.fetchall()
+        
+# Rende un utente un debugger
+def set_debugger(user_id):
+    with conn.cursor() as cur:
+        cur.execute("""
+        UPDATE users
+        SET debugger = true
+        WHERE id = %s;
+        """, (user_id,))
+        
+        conn.commit()
+        
+# Aggiorna l'username di Telegram
+def update_telegram_handle(telegram_id, telegram_handle):
+    with conn.cursor() as cur:
+        cur.execute("""
+        UPDATE users
+        SET telegram_handle = %s
+        WHERE telegram_id = %s;
+        """, (telegram_handle, telegram_id))
+        
+        conn.commit()
+        
+# Rimuove un utente
+def remove_user(user_id):
+    with conn.cursor() as cur:
+        cur.execute("""
+        DELETE FROM users
+        WHERE id = %s;
+        """, (user_id,))
+        
+        conn.commit()
     
         
 # Aggiunge un watch per un utente
-def add_watch(user_id, product_id, product_alias, price_threshold):
+def add_watch(user_id, product_id, product_alias, price_threshold, broadcast = False):
     with conn.cursor() as cur:
         cur.execute("""
-        INSERT INTO product_watches(user_id, product_id, product_alias, price_threshold)
-        VALUES(%s, %s, %s, %s)
+        INSERT INTO product_watches(user_id, product_id, product_alias, price_threshold, broadcast)
+        VALUES(%s, %s, %s, %s, %s)
         RETURNING id;
-        """, (user_id, product_id, product_alias, price_threshold))
+        """, (user_id, product_id, product_alias, price_threshold, broadcast))
         conn.commit()
         
         return cur.fetchone()[0]

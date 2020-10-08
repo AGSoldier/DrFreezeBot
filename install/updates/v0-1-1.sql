@@ -19,3 +19,6 @@ ALTER TABLE users
 ADD COLUMN role int NOT NULL DEFAULT(1),
 ADD FOREIGN KEY(role) REFERENCES roles(id),
 ADD COLUMN debugger boolean NOT NULL DEFAULT(false);
+
+ALTER TABLE product_watches
+ADD COLUMN broadcast boolean NOT NULL DEFAULT(false);

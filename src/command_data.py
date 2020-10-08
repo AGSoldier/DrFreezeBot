@@ -16,6 +16,7 @@ class RegisterCommandData:
     url = None
     alias = None
     price = None
+    broadcast = False
     
     ### Costruttore
     def __init__(self, telegram_id, query):
@@ -55,15 +56,15 @@ class RegisterCommandData:
         except:
             return False
             
-class ApprovalRequestProcess:
+class ApprovalRequestData:
     
     ### Variabili
     query = None
-    request_id = None
     request_name = None
     
+    approval_msgs = []
+    
     ### Costruttori
-    def __init__(self, query, request_id, request_name):
+    def __init__(self, query, request_name):
         self.query = query
-        self.request_id = request_id
         self.request_name = request_name

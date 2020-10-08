@@ -12,11 +12,6 @@ db_name = input("Database name: ")
 if db_name == "":
     db_name = "none"
     
-# Input debug database name
-db_dbg_name = input("Debug database name (default is debug): ")
-if db_dbg_name == "":
-    db_dbg_name = "debug"
-    
 # Input database user
 db_user = input("Database user: ")
 if db_user == "":
@@ -48,10 +43,6 @@ telegram_token = input("Telegram token: ")
 if telegram_token == "":
     telegram_token = "none"
     
-telegram_dbg_token = input("Telegram debug token: ")
-if telegram_dbg_token == "":
-    telegram_dbg_token = "none"
-    
 # Discord token
 discord_token = input("Discord token: ")
 if discord_token == "":
@@ -74,26 +65,22 @@ if amazon_assoc_tag == "":
 
 env_vars = """
 export DB_NAME={}
-export DB_DBG_NAME={}
 export DB_USER={}
 export DB_PASS={}
 export DB_HOST={}
 export DB_PORT={}
 export TELEGRAM_TOKEN={}
-export TELEGRAM_DBG_TOKEN={}
 export DISCORD_TOKEN={}
 export AMAZON_ACCESS_KEY={}
 export AMAZON_SECRET_KEY={}
 export AMAZON_ASSOC_TAG={}
     """.format(
         db_name,
-        db_dbg_name,
         db_user, 
         db_pass, 
         db_host, 
         db_port, 
         telegram_token,
-        telegram_dbg_token,
         discord_token,
         amazon_access_key,
         amazon_secret_key,

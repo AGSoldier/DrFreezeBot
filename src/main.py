@@ -7,6 +7,9 @@ from telegram_bot import TelegramBotThread
 from amazon_watch import AmazonWatch
 
 debug = len(sys.argv) > 1 and sys.argv[1] == "-d"
+if debug:
+    print("[INFO] RUNNING IN DEBUG MODE")
+    
 tbot = TelegramBotThread(debug)
 watch = AmazonWatch(tbot)
 

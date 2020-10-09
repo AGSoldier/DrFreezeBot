@@ -64,9 +64,10 @@ class TelegramBotThread(Thread):
         keyboard = [[InlineKeyboardButton(text = "Acquista subito!", url = url)]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        self.updater.bot.send_message(
+        self.updater.bot.send_photo(
             chat_id = user['telegram_id'], 
-            text = msg, 
+            photo = product.images.primary.large.url,
+            caption = msg, 
             parse_mode = ParseMode.MARKDOWN, 
             reply_markup = reply_markup
         )
@@ -84,9 +85,10 @@ class TelegramBotThread(Thread):
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
                 try:
-                    self.updater.bot.send_message(
+                    self.updater.bot.send_photo(
                         chat_id = user['telegram_id'], 
-                        text = msg, 
+                        photo = product.images.primary.large.url,
+                        caption = msg, 
                         parse_mode = ParseMode.MARKDOWN, 
                         reply_markup = reply_markup
                     )

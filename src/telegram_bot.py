@@ -5,6 +5,7 @@ import database
 from threading import Thread
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.ext import Updater, MessageHandler, CommandHandler, Filters, CallbackQueryHandler
+from url_shortner import short_link
 from command_data import RegisterCommandData, ApprovalRequestData 
 
 # Classe del bot Telegram, estende la classe Thread
@@ -57,7 +58,7 @@ class TelegramBotThread(Thread):
     # Notifica un utente
     def notify_user(self, user_id, product_alias, product):
         user = database.get_user_by_id(user_id)
-        url = product.detail_page_url
+        url = short_link(product.detail_page_url)
         price = product.bestOffer.price.amount
         msg = "Hey! Il prodotto che stavi controllando *{}* è sceso a {}!".format(product_alias, price)
         
